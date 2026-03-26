@@ -1,3 +1,5 @@
+import { AnalyticsMetric } from "@/types/OverView";
+
 export interface User {
   id: number;
   name: string;
@@ -48,4 +50,6 @@ export interface KpiCardData {
   trend?: string;
   trendUp?: boolean;
   detail?: string;
+  metric?: AnalyticsMetric;
+
 }
