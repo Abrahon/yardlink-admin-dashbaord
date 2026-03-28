@@ -17,12 +17,16 @@ import { BillingTab } from '../profile/BillingTab';
 import { OverviewTab } from '../profile/OverviewTab';
 import { activityTimeline, adminNotes, billingHistory, devices, ipLog, userProfile } from '../data/user-profile';
 import { useRouter } from 'next/navigation';
+import { useGetUserById } from '@/api/users';
 
 type Tab = 'overview' | 'billing' | 'activity' | 'security';
 
 
 
-export const UserProfile = () => {
+
+export const UserProfile = ({id}: {id: string}) => {
+  const { data: userData, isLoading, error } = useGetUserById({id: parseInt(id)});
+  const role = userData?.role 
   const [activeTab, setActiveTab] = useState<Tab>('overview');
   const [isActive, setIsActive] = useState(true);
   const [isFlagged, setIsFlagged] = useState(false);
@@ -32,8 +36,8 @@ export const UserProfile = () => {
 
   const tabs = [
     { id: 'overview', label: 'Overview' },
-    { id: 'billing', label: 'Billing' },
-    { id: 'activity', label: 'Activity' },
+    // { id: 'billing', label: 'Billing' },
+    // { id: 'activity', label: 'Activity' },
     { id: 'security', label: 'Security' }
   ];
 
@@ -52,12 +56,12 @@ export const UserProfile = () => {
       <Button variant="outline" size="sm" icon={<MessageSquareIcon className="w-3.5 h-3.5" />}>
         Message
       </Button>
-      <Button variant="secondary" size="sm" icon={<ArrowUpDownIcon className="w-3.5 h-3.5" />}>
+      {/* <Button variant="secondary" size="sm" icon={<ArrowUpDownIcon className="w-3.5 h-3.5" />}>
         Upgrade/Downgrade
       </Button>
       <Button variant="secondary" size="sm" icon={<KeyIcon className="w-3.5 h-3.5" />}>
         Reset Password
-      </Button>
+      </Button> */}
       <Button variant="secondary" size="sm" icon={<BanIcon className="w-3.5 h-3.5" />}>
         Suspend
       </Button>
@@ -80,10 +84,10 @@ export const UserProfile = () => {
 
       {/* Profile Header */}
       <ProfileHeader
-        name={userProfile.name}
-        email={userProfile.email}
-        address={userProfile.address}
-        plan={userProfile.plan}
+        name={userData?.name || 'User Name'}
+        email={userData?.email || 'user@example.com'}
+        address={userData?.address || '123 Main St, City, State'}
+        plan={role === 'landscaper' ? userData?.subscription?.plan?.name : undefined}
         isActive={isActive}
         onToggleStatus={setIsActive}
         actions={quickActions}
@@ -94,7 +98,7 @@ export const UserProfile = () => {
         <Tabs tabs={tabs} activeTab={activeTab} onChange={(id) => setActiveTab(id as Tab)} />
 
         <div className="p-6">
-          {activeTab === 'overview' && <OverviewTab profile={userProfile} />}
+          {activeTab === 'overview' && <OverviewTab profile={userData!=undefined?userData:undefined } />}
           {activeTab === 'billing' && (
             <BillingTab
               currentPlan={userProfile.plan}

@@ -9,7 +9,9 @@ interface UserProfilePageProps {
 export default async function UserProfilePage({
   params,
 }: UserProfilePageProps) {
-  console.log(params);
-  // const { userId } = await params;
-  return <UserProfile />;
+  const { userId } = await params;
+
+  console.log(userId);
+
+  return <UserProfile id={userId} />;
 }

@@ -1,4 +1,4 @@
-import { AnalyticsMetric } from "@/types/OverView";
+// import { AnalyticsMetric } from "@/types/OverView";
 
 export interface User {
   id: number;
@@ -45,11 +45,10 @@ export interface Message {
 }
 
 export interface KpiCardData {
-  label: string;
-  value: string;
-  trend?: string;
-  trendUp?: boolean;
-  detail?: string;
-  metric?: AnalyticsMetric;
-
+  title: string;
+  metric: string;
+  value: number;
+  change_percentage?: number;
+  change_direction?: "increase" | "decrease" | "no_change";
+  comparison_label?: string;
 }

@@ -48,8 +48,10 @@ export const StatusBadge = ({ status }: { status: string }) => {
 };
 
 export const RoleBadge = ({ role }: { role: string }) => {
-  return role === 'Landscaper' 
+  return role === 'landscaper' 
     ? <Badge variant="blue">Landscaper</Badge>
+    : role=== 'admin'
+    ? <Badge variant="purple">Admin</Badge>
     : <Badge variant="green">Client</Badge>;
 };
 

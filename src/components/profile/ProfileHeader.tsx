@@ -1,13 +1,13 @@
-import React from 'react';
-import { Avatar } from '../ui/Avatar';
-import { Toggle } from '../ui/Toggle';
-import { Badge } from '../ui/Badge';
+import React from "react";
+import { Avatar } from "../ui/Avatar";
+import { Toggle } from "../ui/Toggle";
+import { Badge } from "../ui/Badge";
 
 export interface ProfileHeaderProps {
   name: string;
   email: string;
   address: string;
-  plan: string;
+  plan?: string;
   isActive: boolean;
   onToggleStatus: (active: boolean) => void;
   actions?: React.ReactNode;
@@ -20,7 +20,7 @@ export const ProfileHeader = ({
   plan,
   isActive,
   onToggleStatus,
-  actions
+  actions,
 }: ProfileHeaderProps) => {
   return (
     <div className="bg-white rounded-xl shadow-sm p-6 border border-slate-100">
@@ -32,9 +32,9 @@ export const ProfileHeader = ({
             <p className="text-slate-500 text-sm mt-0.5">{email}</p>
             <p className="text-slate-400 text-sm mt-0.5">{address}</p>
             <div className="flex items-center gap-2 mt-2">
-              <Badge variant="purple">{plan} Plan</Badge>
-              <Badge variant={isActive ? 'success' : 'error'}>
-                {isActive ? 'Active' : 'Suspended'}
+              {plan && <Badge variant="purple">{plan} Plan</Badge>}
+              <Badge variant={isActive ? "success" : "error"}>
+                {isActive ? "Active" : "Suspended"}
               </Badge>
             </div>
           </div>
@@ -44,12 +44,16 @@ export const ProfileHeader = ({
           <span className="text-sm text-slate-600">Status:</span>
           <Toggle checked={isActive} onChange={onToggleStatus} size="sm" />
           <span className="text-sm font-medium text-slate-700">
-            {isActive ? 'Active' : 'Suspended'}
+            {isActive ? "Active" : "Suspended"}
           </span>
         </div>
       </div>
 
-      {actions && <div className="flex flex-wrap gap-2 mt-6 pt-6 border-t border-slate-100">{actions}</div>}
+      {actions && (
+        <div className="flex flex-wrap gap-2 mt-6 pt-6 border-t border-slate-100">
+          {actions}
+        </div>
+      )}
     </div>
   );
 };

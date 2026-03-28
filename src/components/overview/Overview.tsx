@@ -8,16 +8,18 @@ import { UserGrowthChart } from "@/components/charts/UserGrowthChart";
 import { RevenueChart } from "@/components/charts/RevenueChart";
 import { ExportDropdown } from "@/components/ui/Dropdown";
 import { KpiCardData } from "../types";
-import { kpiCards, kpiCards2 } from "../data/overview";
 import { RecentActivity } from "./RecentActivity";
 import { AnalyticsDrawer } from "./AnalyticsDrawer";
 import { useAnalytics } from "@/api/overview/query";
 
 export const Overview = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [selectedMetric, setSelectedMetric] = useState<KpiCardData | null>(
-    null,
-  );
+  const [selectedMetric, setSelectedMetric] = useState<{
+    metric: string;
+    card: any;
+    chart: any;
+    breakdown: Record<string, any>;
+  } | null>(null);
 
   // Analytics queries
   const totalUsers = useAnalytics("total_users", {});
@@ -28,9 +30,27 @@ export const Overview = () => {
   const churnRate = useAnalytics("churn_rate", {});
   const subscriptionRevenue = useAnalytics("subscription_revenue", {});
   const stripeRevenue = useAnalytics("stripe_fee_revenue", {});
+  console.log(totalUsers, "totalUsers");
+  console.log(totalLandscapers, "totalLandscappers");
+  console.log(totalClients, "totalClients");
+  console.log(jobsCompleted, "jobsCompleted");
+  console.log(activeSubs, "activeSubs");
+  console.log(churnRate, "churnRate");
+  console.log(subscriptionRevenue, "subscriptionRevenue");
+  console.log(stripeRevenue, "stripeRevenue");
 
-  const openDrawer = (card: KpiCardData) => {
-    setSelectedMetric(card);
+  const openDrawer = (metric: string) => {
+    const api = analyticsMap[metric];
+
+    if (!api) return;
+
+    setSelectedMetric({
+      metric,
+      card: api.card,
+      chart: api.chart,
+      breakdown: api.breakdown,
+    });
+
     setDrawerOpen(true);
   };
 
@@ -38,38 +58,54 @@ export const Overview = () => {
     console.log(`Exporting as ${format}`);
   };
 
+  const cards: KpiCardData[] = [
+    { title: "Total Users", metric: "total_users", value: 0 },
+    { title: "Total Landscapers", metric: "total_landscapers", value: 0 },
+    { title: "Total Clients", metric: "total_clients", value: 0 },
+    { title: "Jobs Completed", metric: "jobs_completed", value: 0 },
+    {
+      title: "Active Pro Subscriptions",
+      metric: "active_subscriptions",
+      value: 0,
+    },
+    { title: "Churn Rate", metric: "churn_rate", value: 0 },
+    { title: "Subscription Revenue", metric: "subscription_revenue", value: 0 },
+    { title: "Stripe Fee Revenue", metric: "stripe_fee_revenue", value: 0 },
+  ];
+
+  // console.log(cards, "cards");
+
   // Map API data to card label
   const analyticsMap: Record<string, any> = {
-    "Total Users": totalUsers.data,
-    "Total Landscapers": totalLandscapers.data,
-    "Total Clients": totalClients.data,
-    "Jobs Completed": jobsCompleted.data,
-    "Active Subscriptions": activeSubs.data,
-    "Churn Rate": churnRate.data,
-    "Subscription Revenue": subscriptionRevenue.data,
-    "Stripe Fee Revenue": stripeRevenue.data,
+    total_users: totalUsers.data,
+    total_landscapers: totalLandscapers.data,
+    total_clients: totalClients.data,
+    jobs_completed: jobsCompleted.data,
+    active_subscriptions: activeSubs.data,
+    churn_rate: churnRate.data,
+    subscription_revenue: subscriptionRevenue.data,
+    stripe_fee_revenue: stripeRevenue.data,
   };
+  // console.log(analyticsMap);
 
   const renderCard = (card: KpiCardData) => {
-    const api = analyticsMap[card.label];
+    const api = analyticsMap[card.metric];
+
+    if (!api?.card) return null; // prevent crash
 
     return (
       <KpiCard
-        key={card.label}
-        label={card.label}
-        value={api?.card?.value ?? card.value}
+        key={card.metric}
+        label={api.card.title || card.title}
+        value={api.card.value.toString()}
         trend={
-          api?.card?.change_percentage !== undefined
+          api.card.change_percentage !== undefined
             ? `${api.card.change_percentage}%`
-            : card.trend
+            : undefined
         }
-        trendUp={
-          api?.card?.change_direction
-            ? api.card.change_direction === "increase"
-            : card.trendUp
-        }
-        detail={api?.card?.comparison_label ?? card.detail}
-        onClick={() => openDrawer(card)}
+        trendUp={api.card.change_direction === "increase"}
+        detail={api.card.comparison_label}
+        onClick={() => openDrawer(card.metric)}
       />
     );
   };
@@ -84,13 +120,13 @@ export const Overview = () => {
 
       {/* KPI Row 1 */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {kpiCards.map(renderCard)}
+        {cards.map(renderCard)}
       </div>
 
       {/* KPI Row 2 */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        {kpiCards2.map(renderCard)}
-      </div>
+      {/* <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        {cards.slice(4).map(renderCard)}
+      </div> */}
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
