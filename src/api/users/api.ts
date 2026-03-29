@@ -15,3 +15,4 @@ export const fetchUserById = async (id: { id: number }):Promise<User> => {
   const { data } = await axios.get(`/admin/users/${id.id}/`);
   return data;
 };
+

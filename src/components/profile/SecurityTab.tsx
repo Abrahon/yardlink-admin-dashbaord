@@ -1,22 +1,36 @@
 import React from "react";
-import { ShieldIcon, MonitorIcon, FlagIcon, SaveIcon } from "lucide-react";
+import { ShieldIcon, FlagIcon, SaveIcon } from "lucide-react";
 import { Toggle } from "@/components/ui/Toggle";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Textarea";
+import {format} from "date-fns";
+
+export interface LoginActivity {
+  id: number;
+  ip_address: string;
+  device_type: string;
+  os: string | null; // API returns null in your example
+  browser: string | null; // API returns null in your example
+  user_agent: string;
+  created_at: string;
+}
+
 
 export interface SecurityTabProps {
   lastLogin: string;
-  devices: Array<{
-    device: string;
-    browser: string;
-    os: string;
-    lastSeen: string;
-    location: string;
-  }>;
-  ipLog: Array<{ ip: string; location: string; date: string; status: string }>;
+  // Merged devices and ipLog into loginActivity as per API structure
+  loginActivity: LoginActivity[];
+  
+  // UI State and Actions
   isFlagged: boolean;
   onToggleFlag: (flagged: boolean) => void;
-  notes: Array<{ author: string; date: string; note: string }>;
+  
+  // Notes Section
+  notes: Array<{ 
+    author: string; 
+    date: string; 
+    note: string 
+  }>;
   newNote: string;
   onNoteChange: (value: string) => void;
   onSaveNote: () => void;
@@ -24,8 +38,7 @@ export interface SecurityTabProps {
 
 export const SecurityTab = ({
   lastLogin,
-  devices,
-  ipLog,
+  loginActivity,
   isFlagged,
   onToggleFlag,
   notes,
@@ -41,11 +54,11 @@ export const SecurityTab = ({
           <ShieldIcon className="w-4 h-4 text-blue-600" />
           <p className="text-sm font-semibold text-slate-700">Last Login</p>
         </div>
-        <p className="text-sm text-slate-600">{lastLogin}</p>
+        <p className="text-sm text-slate-600">{format(new Date(lastLogin), "MMM dd, yyyy HH:mm:ss")}</p>
       </div>
 
       {/* Devices */}
-      <div>
+      {/* <div>
         <h4 className="font-semibold text-slate-800 mb-3 flex items-center gap-2">
           <MonitorIcon className="w-4 h-4 text-slate-500" />
           Devices Used
@@ -87,7 +100,7 @@ export const SecurityTab = ({
             </tbody>
           </table>
         </div>
-      </div>
+      </div> */}
 
       {/* IP Log */}
       <div>
@@ -96,7 +109,7 @@ export const SecurityTab = ({
           <table className="w-full">
             <thead className="bg-slate-50">
               <tr>
-                {["IP Address", "Location", "Date & Time", "Status"].map(
+                {["IP Address", "OS", "Login at", "Browser","User Agent"].map(
                   (h) => (
                     <th
                       key={h}
@@ -109,18 +122,24 @@ export const SecurityTab = ({
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {ipLog.map((row, i) => (
+              {loginActivity.map((activity, i) => (
                 <tr key={i} className="hover:bg-slate-50">
                   <td className="px-4 py-3 text-sm font-mono text-slate-700">
-                    {row.ip}
+                    {activity.ip_address}
                   </td>
                   <td className="px-4 py-3 text-sm text-slate-600">
-                    {row.location}
+                    {activity.os}
                   </td>
                   <td className="px-4 py-3 text-sm text-slate-500">
-                    {row.date}
+                    { format(new Date(activity.created_at), "MMM dd, yyyy HH:mm:ss")}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 text-sm text-slate-600">
+                    {activity.browser}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-slate-600">
+                    {activity.user_agent}
+                  </td>
+                  {/* <td className="px-4 py-3">
                     <span
                       className={`px-2 py-0.5 rounded-full text-xs font-medium ${
                         row.status === "Flagged"
@@ -130,7 +149,7 @@ export const SecurityTab = ({
                     >
                       {row.status}
                     </span>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>

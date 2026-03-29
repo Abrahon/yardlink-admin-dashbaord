@@ -4,57 +4,38 @@ import { Table, Column } from "../ui/Table";
 import { Avatar } from "../ui/Avatar";
 import { PlanBadge, StatusBadge } from "../ui/Badge";
 import { Button } from "../ui/Button";
-
-interface Subscription {
-  id: number;
-  user: string;
-  avatar: string;
-  plan: string;
-  status: string;
-  start: string;
-  end: string;
-  amount: string;
-}
+import { Subscription } from "@/types/subscription";
 
 export interface SubscriptionsTableProps {
   subscriptions: Subscription[];
   onEdit: (subscription: Subscription) => void;
 }
 
-export const SubscriptionsTable = ({
-  subscriptions,
-  onEdit,
-}: SubscriptionsTableProps) => {
-  const avatarColors = [
-    "bg-blue-500",
-    "bg-green-500",
-    "bg-purple-500",
-    "bg-orange-500",
-    "bg-teal-500",
-    "bg-pink-500",
-    "bg-indigo-500",
-    "bg-rose-500",
-  ];
+export const SubscriptionsTable = ({ subscriptions, onEdit }: SubscriptionsTableProps) => {
+  const avatarColors = ["bg-blue-500", "bg-green-500", "bg-purple-500", "bg-orange-500", "bg-teal-500"];
 
   const columns: Column<Subscription>[] = [
     {
-      key: "user",
+      key: "user_name",
       header: "User",
       cell: (sub) => (
         <div className="flex items-center gap-3">
           <Avatar
-            name={sub.user}
+            name={sub.user_name}
             size="md"
-            color={avatarColors[(sub.id - 1) % avatarColors.length]}
+            color={avatarColors[sub.id % avatarColors.length]}
           />
-          <span className="text-sm font-medium text-slate-800">{sub.user}</span>
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-slate-800">{sub.user_name}</span>
+            <span className="text-xs text-slate-500">{sub.user_email}</span>
+          </div>
         </div>
       ),
     },
     {
-      key: "plan",
+      key: "plan_name",
       header: "Plan",
-      cell: (sub) => <PlanBadge plan={sub.plan} />,
+      cell: (sub) => <PlanBadge plan={sub.plan_name} />,
     },
     {
       key: "status",
@@ -62,38 +43,25 @@ export const SubscriptionsTable = ({
       cell: (sub) => <StatusBadge status={sub.status} />,
     },
     {
-      key: "start",
+      key: "start_date",
       header: "Start Date",
-      cell: (sub) => (
-        <span className="text-sm text-slate-600">{sub.start}</span>
-      ),
+      cell: (sub) => <span className="text-sm text-slate-600">{new Date(sub.start_date).toLocaleDateString()}</span>,
     },
     {
-      key: "end",
+      key: "end_date",
       header: "End Date",
-      cell: (sub) => <span className="text-sm text-slate-600">{sub.end}</span>,
+      cell: (sub) => <span className="text-sm text-slate-600">{new Date(sub.end_date).toLocaleDateString()}</span>,
     },
     {
-      key: "amount",
-      header: "Amount",
-      cell: (sub) => (
-        <span className="text-sm font-semibold text-slate-800">
-          {sub.amount}
-        </span>
-      ),
+      key: "remaining_days",
+      header: "Remaining",
+      cell: (sub) => <span className="text-sm font-semibold text-slate-800">{sub.remaining_days} Days</span>,
     },
     {
       key: "actions",
       header: "Actions",
       cell: (sub) => (
-        <Button
-          size="sm"
-          icon={<EditIcon className="w-3 h-3" />}
-          onClick={(e) => {
-            e.stopPropagation();
-            onEdit(sub);
-          }}
-        >
+        <Button size="sm" icon={<EditIcon className="w-3 h-3" />} onClick={() => onEdit(sub)}>
           Edit
         </Button>
       ),

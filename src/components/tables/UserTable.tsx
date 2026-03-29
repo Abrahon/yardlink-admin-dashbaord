@@ -1,4 +1,4 @@
-import { StarIcon } from "lucide-react";
+
 import { Avatar } from "../ui/Avatar";
 import { RoleBadge, PlanBadge, StatusBadge } from "../ui/Badge";
 import { Button } from "../ui/Button";
