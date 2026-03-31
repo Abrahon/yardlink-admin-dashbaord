@@ -3,7 +3,7 @@ import { axios } from "@/lib/axios";
 
 export const getSubscriptions = async (params?: { page?: number, limit?: number }) => {
   const { data } = await axios.get<SubscriptionResponse>(
-    "/admin/subscriptions/",
+    "/admin/subscription-users/",
     { params },
   );
   return data;

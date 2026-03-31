@@ -13,6 +13,7 @@ import { SubscriptionsTable } from "../tables/SubscriptionTable";
 import { EditSubscriptionModal } from "../modal/EditSubscriptionModal";
 import { ManagePlansModal } from "../modal/ManagePlansModal";
 import { useGetDashboardStats, useGetSubscriptions } from "@/api/subscription";
+import { Pagination } from "../ui";
 // import { summaryCards, subscriptions } from '@/data/subscriptions';
 
 export const Subscriptions = () => {
@@ -49,11 +50,6 @@ export const Subscriptions = () => {
       value: dashboardStats?.expired_subscriptions || 0,
     },
   ];
-
-  // const filteredSubs =
-  //   activeFilter === 'all' || activeFilter === 'revenue'
-  //     ? subscriptions
-  //     : subscriptions.filter((s) => s.plan === activeFilter || s.status === activeFilter);
 
   return (
     <div className="p-6 space-y-6">
@@ -92,8 +88,19 @@ export const Subscriptions = () => {
       {/* Subscriptions Table */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
         <SubscriptionsTable
-          subscriptions={subscriptionData?.subscriptions || []}
+          subscriptions={subscriptionData?.results || []}
           onEdit={setEditModal}
+        />
+        <Pagination
+          currentPage={page}
+          pageSize={pageSize}
+          totalPages={
+            subscriptionData?.count
+              ? Math.ceil(subscriptionData.count / pageSize)
+              : 1
+          }
+          onPageChange={setPage}
+          totalItems={subscriptionData?.count || 0}
         />
       </div>
 

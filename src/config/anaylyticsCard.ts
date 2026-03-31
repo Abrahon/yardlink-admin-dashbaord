@@ -1,4 +1,4 @@
-import { AnalyticsMetric } from "@/types/OverView";
+import { AnalyticsMetric } from "@/types/overviewresponse";
 
 
 export interface AnalyticsCardConfig {

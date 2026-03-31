@@ -11,13 +11,15 @@ export interface TableProps<T> {
   columns: Column<T>[];
   data: T[];
   onRowClick?: (item: T) => void;
+  rowKey?: string;
   className?: string;
 }
 
-export const Table = <T extends { id?: string | number }>({
+export const Table = <T,>({
   columns,
   data,
   onRowClick,
+  rowKey,
   className = "",
 }: TableProps<T>) => {
   return (
@@ -38,9 +40,11 @@ export const Table = <T extends { id?: string | number }>({
         <tbody className="divide-y divide-slate-50">
           {data.map((item, i) => (
             <tr
-              key={item.id || i}
+              key={String(item[rowKey as keyof T]) || i}
               onClick={() => onRowClick?.(item)}
-              className={`hover:bg-slate-50 transition-colors ${onRowClick ? "cursor-pointer" : ""}`}
+              className={`hover:bg-slate-50 transition-colors ${
+                onRowClick ? "cursor-pointer" : ""
+              }`}
             >
               {columns.map((col) => (
                 <td

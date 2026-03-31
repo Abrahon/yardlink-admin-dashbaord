@@ -1,24 +1,34 @@
 export interface Subscription {
-  id: number;
-  user: number;
-  user_name: string;
-  user_email: string;
-  plan: number;
-  plan_name: string;
-  status: string;
+  user_id: number;
+  name: string;
+  email: string;
+  role: string;
+  subscription_id: number;
+  stripe_customer_id: string;
+  stripe_subscription_id: string;
   is_active: boolean;
   is_trial: boolean;
-  trial_remaining_days: number | null;
+  auto_renew: boolean;
   start_date: string;
   end_date: string;
-  remaining_days: number;
-  created_at: string;
+  invoice_id: string;
+  invoice_number: string;
+  subscription_date: number;
+  description: string;
+  amount: number;
+  payment_status: string;
+  currency: string;
+  invoice_pdf: string;
+  hosted_invoice_url: string;
 }
 
 export interface SubscriptionResponse {
   count: number;
-  subscriptions: Subscription[];
+  next: string | null;
+  previous: string | null;
+  results: Subscription[];
 }
+
 
 export interface PlanInfo {
   total_plans: number;

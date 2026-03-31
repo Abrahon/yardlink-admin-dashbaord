@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AnalyticsMetric } from "@/types/OverView";
+import { AnalyticsMetric } from "@/types/overviewresponse";
 import { useQuery } from "@tanstack/react-query";
 import { getAnalytics } from "./api";
 import { ANALYTICS_ENDPOINTS } from "@/generic/overview";

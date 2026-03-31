@@ -1,21 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState, useMemo } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { Pagination } from "@/components/ui/Pagination";
-import { SearchInput } from "../ui/SearchInput";
 import { UsersTable } from "../tables/UserTable";
 import { useGetUsers } from "@/api/users";
 import { User } from "./interface";
 
 export const Users = () => {
   const router = useRouter();
-  const [search, setSearch] = useState("");
+  // const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-   const pageSize = 10;
+   const pageSize = 20;
   const [roleFilter, setRoleFilter] = useState<
     "all" | "admin" | "client" | "landscaper"
   >("all");
@@ -35,10 +34,10 @@ export const Users = () => {
     setCurrentPage(1);
   };
 
-  const handleSearch = (value: string) => {
-    setSearch(value);
-    setCurrentPage(1);
-  };
+  // const handleSearch = (value: string) => {
+  //   setSearch(value);
+  //   setCurrentPage(1);
+  // };
 
   const summary = usersData?.results?.summary;
   const users = usersData?.results?.data || [];
