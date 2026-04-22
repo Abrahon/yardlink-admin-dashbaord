@@ -68,7 +68,7 @@ export const Payments = () => {
         : "$0.00",
       trend:
         paymentKpis?.total_transaction_revenue?.label || "0% vs last month",
-      trendUp: paymentKpis?.total_transaction_revenue?.change_percent > 0,
+      trendUp: (paymentKpis?.total_transaction_revenue?.change_percent || 0)  > 0,
       tooltip: `Total revenue from all transactions including subscriptions and services. Change vs previous period: ${paymentKpis?.total_transaction_revenue?.label || "N/A"}`,
     },
     {
@@ -80,14 +80,14 @@ export const Payments = () => {
           })}`
         : "$0.00",
       trend: paymentKpis?.total_platform_fees?.label || "0% vs last month",
-      trendUp: paymentKpis?.total_platform_fees?.change_percent > 0,
+      trendUp: (paymentKpis?.total_platform_fees?.change_percent || 0) > 0,
       tooltip: `Platform fees collected from all transactions. Change vs previous period: ${paymentKpis?.total_platform_fees?.label || "N/A"}`,
     },
     {
       label: "Total Transactions",
       value: paymentKpis?.total_transactions?.value?.toLocaleString() || "0",
       trend: paymentKpis?.total_transactions?.label || "0% vs last month",
-      trendUp: paymentKpis?.total_transactions?.change_percent > 0,
+      trendUp: (paymentKpis?.total_transactions?.change_percent || 0) > 0,
       tooltip: `Total number of successful transactions. Change vs previous period: ${paymentKpis?.total_transactions?.label || "N/A"}`,
     },
   ];

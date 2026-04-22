@@ -9,7 +9,7 @@ import { formatDate } from "date-fns";
 
 export interface SubscriptionsTableProps {
   subscriptions: Subscription[];
-  onEdit: (subscription: Subscription) => void;
+  onEdit?: (subscription: Subscription) => void;
 }
 
 export const SubscriptionsTable = ({
@@ -142,7 +142,7 @@ export const SubscriptionsTable = ({
           size="sm"
           variant="outline"
           icon={<EditIcon className="w-3 h-3" />}
-          onClick={() => onEdit(subscription)}
+          onClick={() => onEdit?.(subscription)}
           aria-label={`Edit subscription for ${subscription.name}`}
         >
           Edit

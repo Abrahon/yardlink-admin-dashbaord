@@ -51,7 +51,7 @@ export const recentActivity = [
   },
 ];
 
-export const kpiCards: KpiCardData[] = [
+export const kpiCards= [
   {
     label: "Total Users",
     value: "12,847",
