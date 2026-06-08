@@ -81,35 +81,6 @@ export const subscriptions = [
   }
 ];
 
-export const plans = [
-  {
-    name: 'Basic Plan',
-    price: '$19/mo',
-    duration: 'Monthly',
-    features: [
-      'Up to 10 clients',
-      'Basic job management',
-      'Email support',
-      'Standard profile listing',
-      'Basic analytics'
-    ]
-  },
-  {
-    name: 'Pro Plan',
-    price: '$49/mo',
-    duration: 'Monthly',
-    features: [
-      'Unlimited clients',
-      'Advanced job management',
-      'Priority support',
-      'Featured profile listing',
-      'Advanced analytics',
-      'Custom invoicing',
-      'Team management'
-    ]
-  }
-];
-
 export const summaryCards = [
   { label: 'Total Subscriptions', value: '2,891', filter: 'all', color: 'text-blue-600', bg: 'bg-blue-50' },
   { label: 'Pro Plans', value: '1,044', filter: 'Pro', color: 'text-purple-600', bg: 'bg-purple-50' },

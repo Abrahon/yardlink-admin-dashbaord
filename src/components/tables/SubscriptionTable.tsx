@@ -1,10 +1,24 @@
+"use client";
+
 import React from "react";
-import { EditIcon, ExternalLinkIcon } from "lucide-react";
+import {
+  EditIcon,
+  ExternalLinkIcon,
+  CalendarPlusIcon,
+  PauseIcon,
+  PlayIcon,
+} from "lucide-react";
 import { Table, Column } from "../ui/Table";
 import { Avatar } from "../ui/Avatar";
 import { Badge, PlanBadge, StatusBadge } from "../ui/Badge";
 import { Button } from "../ui/Button";
-import { Subscription } from "@/types/subscription";
+import { Dropdown } from "../ui/Dropdown";
+import { toast } from "../ui/Toast";
+import { ExtendDays, Subscription } from "@/types/subscription";
+import {
+  useExtendSubscription,
+  usePauseSubscription,
+} from "@/api/subscription";
 import { formatDate } from "date-fns";
 
 export interface SubscriptionsTableProps {
@@ -12,10 +26,52 @@ export interface SubscriptionsTableProps {
   onEdit?: (subscription: Subscription) => void;
 }
 
+const EXTEND_OPTIONS: { value: string; label: string }[] = [
+  { value: String(ExtendDays.OneWeek), label: "Extend 7 days" },
+  { value: String(ExtendDays.TwoWeeks), label: "Extend 14 days" },
+  { value: String(ExtendDays.OneMonth), label: "Extend 30 days" },
+  { value: String(ExtendDays.ThreeMonths), label: "Extend 90 days" },
+];
+
 export const SubscriptionsTable = ({
   subscriptions,
   onEdit,
 }: SubscriptionsTableProps) => {
+  const extendSubscription = useExtendSubscription();
+  const pauseSubscription = usePauseSubscription();
+
+  const handleExtend = (subscriptionId: number, days: number) => {
+    extendSubscription.mutate(
+      { id: subscriptionId, payload: { days: days as ExtendDays } },
+      {
+        onSuccess: (data) =>
+          toast.success(data.message || "Subscription extended successfully"),
+        onError: () => toast.error("Failed to extend subscription"),
+      },
+    );
+  };
+
+  const handlePause = (subscription: Subscription) => {
+    const nextActive = !subscription.is_active;
+    pauseSubscription.mutate(
+      { id: subscription.subscription_id, payload: { is_active: nextActive } },
+      {
+        onSuccess: (data) =>
+          toast.success(
+            data.message ||
+              (nextActive
+                ? "Subscription activated successfully"
+                : "Subscription paused successfully"),
+          ),
+        onError: () =>
+          toast.error(
+            nextActive
+              ? "Failed to activate subscription"
+              : "Failed to pause subscription",
+          ),
+      },
+    );
+  };
   const avatarColors = [
     "bg-blue-500",
     "bg-green-500",
@@ -137,17 +193,73 @@ export const SubscriptionsTable = ({
     {
       key: "actions",
       header: "Actions",
-      cell: (subscription) => (
-        <Button
-          size="sm"
-          variant="outline"
-          icon={<EditIcon className="w-3 h-3" />}
-          onClick={() => onEdit?.(subscription)}
-          aria-label={`Edit subscription for ${subscription.name}`}
-        >
-          Edit
-        </Button>
-      ),
+      cell: (subscription) => {
+        const isExtending =
+          extendSubscription.isPending &&
+          extendSubscription.variables?.id === subscription.subscription_id;
+        const isPausing =
+          pauseSubscription.isPending &&
+          pauseSubscription.variables?.id === subscription.subscription_id;
+
+        return (
+          <div className="flex items-center gap-1">
+            <button
+              className="p-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              title="Edit"
+              onClick={() => onEdit?.(subscription)}
+              aria-label={`Edit subscription for ${subscription.name}`}
+            >
+              <EditIcon className="w-4 h-4" />
+            </button>
+
+            {subscription.is_trial ? (
+              <Dropdown
+                align="right"
+                width="w-40"
+                onChange={(value) =>
+                  handleExtend(subscription.subscription_id, Number(value))
+                }
+                options={EXTEND_OPTIONS}
+                trigger={
+                  <button
+                    className="p-2 text-slate-500 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors disabled:opacity-50"
+                    title="Extend"
+                    disabled={isExtending}
+                    aria-label={`Extend subscription for ${subscription.name}`}
+                  >
+                    <CalendarPlusIcon className="w-4 h-4" />
+                  </button>
+                }
+              />
+            ) : (
+              <button
+                className="p-2 text-slate-300 rounded-lg cursor-not-allowed"
+                title="Only trial plans can be extended"
+                disabled
+                aria-label="Only trial plans can be extended"
+              >
+                <CalendarPlusIcon className="w-4 h-4" />
+              </button>
+            )}
+
+            <button
+              className="p-2 text-slate-500 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors disabled:opacity-50"
+              title={subscription.is_active ? "Pause" : "Resume"}
+              disabled={isPausing}
+              onClick={() => handlePause(subscription)}
+              aria-label={`${
+                subscription.is_active ? "Pause" : "Resume"
+              } subscription for ${subscription.name}`}
+            >
+              {subscription.is_active ? (
+                <PauseIcon className="w-4 h-4" />
+              ) : (
+                <PlayIcon className="w-4 h-4" />
+              )}
+            </button>
+          </div>
+        );
+      },
     },
   ];
   return <Table columns={columns} data={subscriptions} />;
