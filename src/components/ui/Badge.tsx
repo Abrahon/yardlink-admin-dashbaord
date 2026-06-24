@@ -33,18 +33,26 @@ export const Badge = ({ children, variant = 'default', className = '' }: BadgePr
 
 // Specific badge helpers
 export const StatusBadge = ({ status }: { status: string }) => {
+  const normalized = status?.toLowerCase()?.trim() || "";
   const map: Record<string, BadgeVariant> = {
-    Active: 'success',
-    Completed: 'success',
-    Paid: 'success',
-    Pending: 'warning',
-    Suspended: 'error',
-    Expired: 'error',
-    Failed: 'error',
-    Trial: 'warning',
-    Flagged: 'error'
+    active: 'success',
+    completed: 'success',
+    paid: 'success',
+    success: 'success',
+    pending: 'warning',
+    suspended: 'error',
+    expired: 'error',
+    failed: 'error',
+    trial: 'warning',
+    flagged: 'error',
   };
-  return <Badge variant={map[status] || 'default'}>{status}</Badge>;
+  const label = status
+    .toLowerCase()
+    .split(/[_\s-]+/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
+  return <Badge variant={map[normalized] || 'default'}>{label}</Badge>;
 };
 
 export const RoleBadge = ({ role }: { role: string }) => {

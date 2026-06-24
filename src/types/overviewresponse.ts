@@ -38,6 +38,13 @@ export interface AnalyticsResponse<T extends string> {
   breakdown: AnalyticsBreakdown;
 }
 
+export interface RecentActivityItem {
+  user_name: string;
+  action: string;
+  status: string;
+  date: string;
+}
+
 export type AnalyticsMetric =
   | "total_users"
   | "total_landscapers"
