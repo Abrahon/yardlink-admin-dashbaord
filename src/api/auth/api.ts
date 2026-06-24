@@ -1,4 +1,5 @@
 import { axios } from "@/lib/axios";
+import { AcceptInviteResponse, AcceptInviteRequest } from "@/types/auth";
 
 const contentType = "multipart/form-data";
 
@@ -22,5 +23,21 @@ export const verifyOtp = async (otpData: { email: string; otp: string }) => {
       "Content-Type": contentType,
     },
   });
+  return data;
+};
+
+export const acceptInvite = async (
+  token: string,
+  payload: AcceptInviteRequest
+) => {
+  const { data } = await axios.post<AcceptInviteResponse>(
+    `/api/accept-invite/${token}/`,
+    payload,
+    {
+      headers: {
+        "Content-Type": contentType,
+      },
+    }
+  );
   return data;
 };

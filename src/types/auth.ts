@@ -31,6 +31,15 @@ export interface VerifyOtpResponse {
   };
 }
 
+export interface AcceptInviteRequest {
+  name: string;
+  password: string;
+}
+
+export interface AcceptInviteResponse {
+  message: string;
+}
+
 export interface AuthError {
   message: string;
   status?: number;
