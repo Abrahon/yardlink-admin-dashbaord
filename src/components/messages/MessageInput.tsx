@@ -31,8 +31,9 @@ export const MessageInput = ({ onSend }: MessageInputProps) => {
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Type a message... (Enter to send)"
-            rows={2}
-            className="w-full px-4 py-3 text-sm focus:outline-none resize-none"
+            rows={3}
+            className="w-full min-h-[80px] max-h-44 px-4 py-3 text-sm focus:outline-none resize-none overflow-y-auto"
+            aria-label="Message input"
           />
           <div className="flex items-center gap-2 px-4 py-2 border-t border-slate-100">
             <button className="text-slate-400 hover:text-slate-600 transition-colors">

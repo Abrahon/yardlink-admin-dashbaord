@@ -1,8 +1,11 @@
 /* eslint-disable react-hooks/purity */
+import Image from "next/image";
+
 export interface AvatarProps {
   name: string;
   size?: "sm" | "md" | "lg";
   color?: string;
+  image?: string | null;
   className?: string;
 }
 
@@ -21,6 +24,7 @@ export const Avatar = ({
   name,
   size = "md",
   color,
+  image,
   className = "",
 }: AvatarProps) => {
   const initials = name
@@ -36,9 +40,34 @@ export const Avatar = ({
     lg: "w-10 h-10 text-sm",
   };
 
+  const sizePixels = {
+    sm: 24,
+    md: 32,
+    lg: 40,
+  };
+
   const bgColor =
     color || avatarColors[Math.floor(Math.random() * avatarColors.length)];
 
+  // If image is provided and valid, show it
+  if (image && image.trim().length > 0) {
+    return (
+      <div
+        className={`${sizeClasses[size]} rounded-full flex items-center justify-center shrink-0 overflow-hidden ${className}`}
+      >
+        <Image
+          src={image}
+          alt={name}
+          width={sizePixels[size]}
+          height={sizePixels[size]}
+          className="w-full h-full object-cover"
+          unoptimized
+        />
+      </div>
+    );
+  }
+
+  // Fallback to initials
   return (
     <div
       className={`${sizeClasses[size]} ${bgColor} rounded-full flex items-center justify-center shrink-0 ${className}`}
@@ -47,3 +76,4 @@ export const Avatar = ({
     </div>
   );
 };
+
