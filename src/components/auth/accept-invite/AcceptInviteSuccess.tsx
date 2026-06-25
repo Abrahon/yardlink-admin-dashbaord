@@ -29,7 +29,7 @@ export const AcceptInviteSuccess = () => {
             Your account is ready. You can now sign in and access the platform.
           </p>
 
-          <div className="mt-8 space-y-4">
+          {/* <div className="mt-8 space-y-4">
             <Link href="/login"
               className="inline-flex items-center justify-center w-full rounded-lg px-5 py-3 text-sm font-semibold text-white"
               style={{ backgroundColor: "var(--color-primary)", fontFamily: "var(--font-inter)" }}>
@@ -40,7 +40,11 @@ export const AcceptInviteSuccess = () => {
               style={{ fontFamily: "var(--font-inter)" }}>
               Back to home
             </Link>
-          </div>
+          </div> */}
+        <p className="mt-1 text-sm text-green-700">
+
+            You can now log in to the YardLink app and start using your team member account.
+      </p>
         </div>
       </div>
     </main>

@@ -31,7 +31,7 @@ export const acceptInvite = async (
   payload: AcceptInviteRequest
 ) => {
   const { data } = await axios.post<AcceptInviteResponse>(
-    `/api/accept-invite/${token}/`,
+    `/accept-invite/${token}/`,
     payload,
     {
       headers: {

@@ -1,10 +1,11 @@
 import { AcceptInvite } from "@/components/auth/accept-invite/AcceptInvite";
 
 interface AcceptInvitePageProps {
-  searchParams?: { token?: string };
+  searchParams?: Promise<{ token?: string }>;
 }
 
-export default function AcceptInvitePage({ searchParams }: AcceptInvitePageProps) {
-  const token = searchParams?.token ?? "";
+export default async function AcceptInvitePage({ searchParams }: AcceptInvitePageProps) {
+  const params = await searchParams;
+  const token = params?.token ?? "";
   return <AcceptInvite token={token} />;
 }

@@ -6,6 +6,8 @@ const PUBLIC_ROUTES = [
   "/forgot-password",
   "/verify",
   "/reset-password",
+  "/accept-invite",
+  "/accept-invite/success",
 ];
 
 export function proxy(request: NextRequest) {
