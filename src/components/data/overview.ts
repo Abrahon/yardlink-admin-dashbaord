@@ -1,12 +1,12 @@
 import { KpiCardData } from "../types";
 
 export const userGrowthData = [
-  { month: "Aug", users: 9200, landscapers: 2400 },
-  { month: "Sep", users: 10100, landscapers: 2650 },
-  { month: "Oct", users: 10800, landscapers: 2850 },
-  { month: "Nov", users: 11200, landscapers: 2980 },
-  { month: "Dec", users: 11900, landscapers: 3100 },
-  { month: "Jan", users: 12847, landscapers: 3241 },
+  { month: "Aug", users: 9200, landscapers: 2400, clients: 1800 },
+  { month: "Sep", users: 10100, landscapers: 2650, clients: 1950 },
+  { month: "Oct", users: 10800, landscapers: 2850, clients: 2100 },
+  { month: "Nov", users: 11200, landscapers: 2980, clients: 2200 },
+  { month: "Dec", users: 11900, landscapers: 3100, clients: 2350 },
+  { month: "Jan", users: 12847, landscapers: 3241, clients: 2500 },
 ];
 
 export const revenueData = [
