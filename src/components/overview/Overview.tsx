@@ -30,9 +30,10 @@ export const Overview = () => {
       total_landscapers: summary?.total_landscapers ?? 0,
       total_clients: summary?.total_clients ?? 0,
       active_subscriptions: summary?.active_subscriptions ?? 0,
-      churn_rate: summary?.churn_rate ?? 0,
+      weekly_new_signups: summary?.weekly_new_signups ?? 0,
       basic_subscriptions: summary?.basic_subscriptions ?? 0,
       pro_subscriptions: summary?.pro_subscriptions ?? 0,
+      platform_fee_collected: summary?.platform_fee_collected ?? 0,
     }),
     [summary]
   );
@@ -63,28 +64,65 @@ export const Overview = () => {
     { title: "Active Subscriptions", metric: "active_subscriptions", value: 0 },
     { title: "Basic Subscriptions", metric: "basic_subscriptions", value: 0 },
     { title: "Pro Subscriptions", metric: "pro_subscriptions", value: 0 },
-    { title: "Churn Rate", metric: "churn_rate", value: 0 },
+    { title: "Weekly Signup", metric: "weekly_new_signups", value: 0 },
+    { title: "Platform Fee", metric: "platform_fee_collected", value: 0 },
   ];
 
   const analyticsMap: Record<string, any> = {
-    total_users: { card: { title: "Total Users", value: overviewSummary.total_users } },
+    total_users: {
+      card: {
+        title: "Total Users",
+        value: overviewSummary.total_users,
+      },
+    },
+
     total_landscapers: {
-      card: { title: "Total Landscapers", value: overviewSummary.total_landscapers },
+      card: {
+        title: "Total Landscapers",
+        value: overviewSummary.total_landscapers,
+      },
     },
+
     total_clients: {
-      card: { title: "Total Clients", value: overviewSummary.total_clients },
+      card: {
+        title: "Total Clients",
+        value: overviewSummary.total_clients,
+      },
     },
+
     active_subscriptions: {
-      card: { title: "Active Subscriptions", value: overviewSummary.active_subscriptions },
+      card: {
+        title: "Active Subscriptions",
+        value: overviewSummary.active_subscriptions,
+      },
     },
+
     basic_subscriptions: {
-      card: { title: "Basic Subscriptions", value: overviewSummary.basic_subscriptions },
+      card: {
+        title: "Basic Subscriptions",
+        value: overviewSummary.basic_subscriptions,
+      },
     },
+
     pro_subscriptions: {
-      card: { title: "Pro Subscriptions", value: overviewSummary.pro_subscriptions },
+      card: {
+        title: "Pro Subscriptions",
+        value: overviewSummary.pro_subscriptions,
+      },
     },
-    churn_rate: {
-      card: { title: "Churn Rate", value: overviewSummary.churn_rate },
+
+    weekly_new_signups: {
+      card: {
+        title: "Weekly Signup",
+        value: overviewSummary.weekly_new_signups,
+      },
+    },
+
+    platform_fee_collected: {
+      card: {
+        title: "Platform Fee",
+        value: `$${overviewSummary.platform_fee_collected.toFixed(2)}`,
+      },
     },
   };
 
