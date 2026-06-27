@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { KpiCard } from "@/components/cards/KpiCard";
 import { UserGrowthChart } from "@/components/charts/UserGrowthChart";
@@ -10,7 +10,7 @@ import { ExportDropdown } from "@/components/ui/Dropdown";
 import { KpiCardData } from "../types";
 import { RecentActivity } from "./RecentActivity";
 import { AnalyticsDrawer } from "./AnalyticsDrawer";
-import { useAnalytics } from "@/api/overview/query";
+import { useGetUsers } from "@/api/users/query";
 
 export const Overview = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -21,23 +21,21 @@ export const Overview = () => {
     breakdown: Record<string, any>;
   } | null>(null);
 
-  // Analytics queries
-  const totalUsers = useAnalytics("total_users", {});
-  const totalLandscapers = useAnalytics("total_landscapers", {});
-  const totalClients = useAnalytics("total_clients", {});
-  const jobsCompleted = useAnalytics("jobs_completed", {});
-  const activeSubs = useAnalytics("active_subscriptions", {});
-  const churnRate = useAnalytics("churn_rate", {});
-  const subscriptionRevenue = useAnalytics("subscription_revenue", {});
-  const stripeRevenue = useAnalytics("stripe_fee_revenue", {});
-  console.log(totalUsers, "totalUsers");
-  console.log(totalLandscapers, "totalLandscappers");
-  console.log(totalClients, "totalClients");
-  console.log(jobsCompleted, "jobsCompleted");
-  console.log(activeSubs, "activeSubs");
-  console.log(churnRate, "churnRate");
-  console.log(subscriptionRevenue, "subscriptionRevenue");
-  console.log(stripeRevenue, "stripeRevenue");
+  const { data: usersData } = useGetUsers({ page: 1 });
+  const summary = useMemo(() => usersData?.results?.summary, [usersData]);
+
+  const overviewSummary = useMemo(
+    () => ({
+      total_users: summary?.total_users ?? 0,
+      total_landscapers: summary?.total_landscapers ?? 0,
+      total_clients: summary?.total_clients ?? 0,
+      active_subscriptions: summary?.active_subscriptions ?? 0,
+      churn_rate: summary?.churn_rate ?? 0,
+      basic_subscriptions: summary?.basic_subscriptions ?? 0,
+      pro_subscriptions: summary?.pro_subscriptions ?? 0,
+    }),
+    [summary]
+  );
 
   const openDrawer = (metric: string) => {
     const api = analyticsMap[metric];
@@ -62,49 +60,47 @@ export const Overview = () => {
     { title: "Total Users", metric: "total_users", value: 0 },
     { title: "Total Landscapers", metric: "total_landscapers", value: 0 },
     { title: "Total Clients", metric: "total_clients", value: 0 },
-    { title: "Jobs Completed", metric: "jobs_completed", value: 0 },
-    {
-      title: "Active Pro Subscriptions",
-      metric: "active_subscriptions",
-      value: 0,
-    },
+    { title: "Active Subscriptions", metric: "active_subscriptions", value: 0 },
+    { title: "Basic Subscriptions", metric: "basic_subscriptions", value: 0 },
+    { title: "Pro Subscriptions", metric: "pro_subscriptions", value: 0 },
     { title: "Churn Rate", metric: "churn_rate", value: 0 },
-    { title: "Subscription Revenue", metric: "subscription_revenue", value: 0 },
-    { title: "Stripe Fee Revenue", metric: "stripe_fee_revenue", value: 0 },
   ];
 
-  // console.log(cards, "cards");
-
-  // Map API data to card label
   const analyticsMap: Record<string, any> = {
-    total_users: totalUsers.data,
-    total_landscapers: totalLandscapers.data,
-    total_clients: totalClients.data,
-    jobs_completed: jobsCompleted.data,
-    active_subscriptions: activeSubs.data,
-    churn_rate: churnRate.data,
-    subscription_revenue: subscriptionRevenue.data,
-    stripe_fee_revenue: stripeRevenue.data,
+    total_users: { card: { title: "Total Users", value: overviewSummary.total_users } },
+    total_landscapers: {
+      card: { title: "Total Landscapers", value: overviewSummary.total_landscapers },
+    },
+    total_clients: {
+      card: { title: "Total Clients", value: overviewSummary.total_clients },
+    },
+    active_subscriptions: {
+      card: { title: "Active Subscriptions", value: overviewSummary.active_subscriptions },
+    },
+    basic_subscriptions: {
+      card: { title: "Basic Subscriptions", value: overviewSummary.basic_subscriptions },
+    },
+    pro_subscriptions: {
+      card: { title: "Pro Subscriptions", value: overviewSummary.pro_subscriptions },
+    },
+    churn_rate: {
+      card: { title: "Churn Rate", value: overviewSummary.churn_rate },
+    },
   };
-  // console.log(analyticsMap);
 
   const renderCard = (card: KpiCardData) => {
     const api = analyticsMap[card.metric];
 
-    if (!api?.card) return null; // prevent crash
+    if (!api?.card) return null;
 
     return (
       <KpiCard
         key={card.metric}
         label={api.card.title || card.title}
         value={api.card.value.toString()}
-        trend={
-          api.card.change_percentage !== undefined
-            ? `${api.card.change_percentage}%`
-            : undefined
-        }
-        trendUp={api.card.change_direction === "increase"}
-        detail={api.card.comparison_label}
+        trend={undefined}
+        trendUp={undefined}
+        detail={undefined}
         onClick={() => openDrawer(card.metric)}
       />
     );
