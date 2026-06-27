@@ -35,6 +35,6 @@ export const getAdminNotifications = async (): Promise<AdminNotificationsRespons
 };
 
 export const markNotificationAsRead = async (id: number) => {
-  const { data } = await axios.patch(`/admin/notifications/${id}/read/`);
+  const { data } = await axios.post(`/admin/notifications/${id}/read/`);
   return data;
 };
